@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 *.sqlite3
 
+=======
+>>>>>>> 968cbe9... Create s3 upload
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
