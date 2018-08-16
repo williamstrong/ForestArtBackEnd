@@ -48,7 +48,7 @@ class Image(models.Model):
     creation_date = models.DateTimeField('date created', auto_now_add=True)
     publish_date = models.DateTimeField('date published', auto_now_add=True)
 
-    file_path = lambda instance, filename: 'images/{0}/{1}'.format(instance.category, instance.name)
+    file_path = lambda instance, filename: 'images/{0}/{1}/{2}'.format(instance.category, instance.name, filename)
 
     def clean(self):
         self.name = self.title.replace(' ', '_').lower()
