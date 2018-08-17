@@ -8,7 +8,15 @@ class ImageType(DjangoObjectType):
         model = Image
 
 class Query(object):
-    all_images = graphene.List(ImageType)
+    images = graphene.List(
+            ImageType,
+            category=graphene.String())
 
-    def resolve_all_images(self, info, **kwargs):
-        return Image.objects.all()
+    def resolve_images(self, info, **kwargs):
+        category = kwargs.get('category')
+
+        if category is not None:
+            return Image.objects.filter(category=category)
+        else:
+            return Image.objects.all().order_by('-publish_date')
+
