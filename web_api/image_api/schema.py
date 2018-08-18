@@ -11,6 +11,10 @@ class Query(object):
     images = graphene.List(
             ImageType,
             category=graphene.String())
+    image = graphene.Field(
+            ImageType,
+            category=graphene.String(),
+            name=graphene.String())
 
     def resolve_images(self, info, **kwargs):
         category = kwargs.get('category')
@@ -20,3 +24,9 @@ class Query(object):
         else:
             return Image.objects.all().order_by('-publish_date')
 
+    def resolve_image(self, info, **kwargs):
+        category = kwargs.get('category')
+        name = kwargs.get('name')
+
+        if all([category, name]):
+            return Image.objects.get(category__exact=category, name__exact=name)
