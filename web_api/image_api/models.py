@@ -3,6 +3,20 @@ from django.db import models
 def file_path(instance, filename):
     return Image.file_path(instance, filename)
 
+class Category(models.Model):
+    name = models.CharField(max_length=50, help_text="Category name.")
+
+    image = models.ForeignKey(
+            "Image",
+            on_delete=models.CASCADE,
+            null=True,
+            related_name="+",
+            help_text="Image that will be shown on the category preview."
+    )
+
+    def __str__(self):
+        return self.name
+
 class Image(models.Model):
     """Model for images on the site.
 
@@ -14,15 +28,18 @@ class Image(models.Model):
     """
 
     title = models.CharField(max_length=100, help_text="Title of Image")
+
     name = models.CharField(
             max_length=100,
             editable=False,
             help_text="Name of Image"
     )
-    category = models.CharField(
-            max_length=100,
-            default = 'other',
-            help_text="Category of Image"
+
+    category = models.ForeignKey(
+            Category,
+            on_delete=models.CASCADE,
+            null=True,
+            related_name="+"
     )
 
     source_standard = models.ImageField(
@@ -54,4 +71,4 @@ class Image(models.Model):
         self.name = self.title.replace(' ', '_').lower()
 
     def __str__(self):
-        return '{0} at S3 path {1}/{2}'.format(self.title, self.category, self.name)
+        return self.name
