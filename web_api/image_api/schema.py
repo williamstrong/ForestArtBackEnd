@@ -1,32 +1,30 @@
-import graphene
+from graphene import relay
 from graphene_django.types import DjangoObjectType
-
+from graphene_django.filter import DjangoFilterConnectionField
 from .models import Category, Image
 
-class ImageType(DjangoObjectType):
+class ImageNode(DjangoObjectType):
     class Meta:
         model = Image
+        filter_fields = ['id', 'name', 'category']
+        interfaces = (relay.Node, )
 
-class CategoryType(DjangoObjectType):
+    @classmethod
+    def get_node(cls, info, id):
+        return Image.objects.get(id=id)
+
+class CategoryNode(DjangoObjectType):
     class Meta:
         model = Category
+        filter_fields = ['name']
+        interfaces = (relay.Node, )
+
+    def get_node(cls, info, id):
+        return Category.object.get(id=id)
 
 class Query(object):
-    images = graphene.List(
-            ImageType,
-            category=graphene.String())
+    image = relay.Node.Field(ImageNode)
+    images = DjangoFilterConnectionField(ImageNode)
 
-    categories = graphene.List(
-            CategoryType
-    )
-
-    def resolve_images(self, info, **kwargs):
-        category = kwargs.get('category')
-
-        if category is not None:
-            return Image.objects.filter(category__name=category)
-        else:
-            return Image.objects.all().order_by('-publish_date')
-
-    def resolve_categories(self, info, **kwargs):
-        return Category.objects.all()
+    category = relay.Node.Field(CategoryNode)
+    category = DjangoFilterConnectionField(CategoryNode)
