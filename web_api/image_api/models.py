@@ -27,6 +27,9 @@ class Image(models.Model):
     file_path needs to change as well.
     """
 
+    class Meta:
+        ordering = ['-publish_date']
+
     title = models.CharField(max_length=100, help_text="Title of Image")
 
     name = models.CharField(

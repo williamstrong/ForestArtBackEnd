@@ -6,7 +6,7 @@ from .models import Category, Image
 class ImageNode(DjangoObjectType):
     class Meta:
         model = Image
-        filter_fields = ['id', 'name', 'category']
+        filter_fields = ['id', 'name', 'category__name']
         interfaces = (relay.Node, )
 
     @classmethod
@@ -16,7 +16,7 @@ class ImageNode(DjangoObjectType):
 class CategoryNode(DjangoObjectType):
     class Meta:
         model = Category
-        filter_fields = ['name']
+        filter_fields = []
         interfaces = (relay.Node, )
 
     def get_node(cls, info, id):
@@ -27,4 +27,4 @@ class Query(object):
     images = DjangoFilterConnectionField(ImageNode)
 
     category = relay.Node.Field(CategoryNode)
-    category = DjangoFilterConnectionField(CategoryNode)
+    categories = DjangoFilterConnectionField(CategoryNode)
