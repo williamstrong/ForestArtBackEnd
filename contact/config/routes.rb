@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  get 'contact/index'
+  resources :persons do
+    resources :messages
+  end
 
-  resources :contact
-
-  root 'contact#index'
+  resource :communications, only: [:create]
 end
